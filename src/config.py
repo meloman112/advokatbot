@@ -18,6 +18,8 @@ LOG_DATE_FORMAT: Final[str] = "%Y-%m-%d %H:%M:%S"
 
 class BotConfig(BaseModel):
     token: str
+    channel_id: int
+    superadmin_id: int
 
 
 class BaseDatabaseConfig(BaseModel):

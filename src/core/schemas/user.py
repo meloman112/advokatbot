@@ -12,9 +12,11 @@ class UserS(BaseModel):
     id: int
     tg_id: int
     first_name: str
-    username: str
-    last_name: str
+    username: str | None
+    last_name: str | None
 
+    lang: str
+    is_admin: bool
     is_active: bool
 
     created_at: datetime
@@ -29,8 +31,6 @@ class UserCreateS(BaseModel):
 
 
 class UserUpdateS(BaseModel):
-    tg_id: int | None = None
-    first_name: str | None = None
-    username: str | None = None
-    last_name: str | None = None
+    lang: str | None = None
+    is_admin: bool | None = None
     is_active: bool | None = None

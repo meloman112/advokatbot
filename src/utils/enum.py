@@ -10,4 +10,10 @@ class LogLevelEnum(StrEnum):
 
 
 class LanguageEnum(StrEnum):
-    EN = "en"
+    RU = "ru"
+    UZ = "uz"
+
+
+class RequestStatusEnum(StrEnum):
+    NEW = "new"
+    ANSWERED = "answered"

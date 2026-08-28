@@ -75,11 +75,12 @@ class BaseRepository[ModelT: BaseOrm, CreateST: BaseModel, UpdateST: BaseModel](
         # fmt: off
         stmt = (
             update(cls.model_class)
-            .values(**update_schema.model_dump())
+            .values(**update_schema.model_dump(exclude_none=True))
             .filter_by(**filter_by)
         )
         # fmt: on
         await session.execute(stmt)
+        await session.commit()
 
     @classmethod
     async def update_by_id(cls, session: AsyncSession, id_: int, update_schema: UpdateST) -> None:

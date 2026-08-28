@@ -6,12 +6,14 @@ services:
     profiles: [ "prod" ]
     environment:
       APP_CONFIG__BOT__TOKEN: ${APP_CONFIG__BOT__TOKEN}
+      APP_CONFIG__BOT__CHANNEL_ID: ${APP_CONFIG__BOT__CHANNEL_ID}
+      APP_CONFIG__BOT__SUPERADMIN_ID: ${APP_CONFIG__BOT__SUPERADMIN_ID}
 
       APP_CONFIG__DB__NAME: ${APP_CONFIG__DB__NAME}
       APP_CONFIG__DB__PASSWORD: ${APP_CONFIG__DB__PASSWORD}
       APP_CONFIG__DB__USER: ${APP_CONFIG__DB__USER}
       APP_CONFIG__DB__HOST: pg
-      APP_CONFIG__DB__PORT: ${APP_CONFIG__DB__PORT}
+      APP_CONFIG__DB__PORT: 5432
       APP_CONFIG__DB__DRIVER: ${APP_CONFIG__DB__DRIVER}
 
       APP_CONFIG__DB__ECHO: ${APP_CONFIG__DB__ECHO}
@@ -20,7 +22,7 @@ services:
       APP_CONFIG__DB__MAX_OVERFLOW: ${APP_CONFIG__DB__MAX_OVERFLOW}
 
       APP_CONFIG__REDIS__HOST: redis
-      APP_CONFIG__REDIS__PORT: ${APP_CONFIG__REDIS__PORT}
+      APP_CONFIG__REDIS__PORT: 6379
     depends_on:
       pg:
         condition: service_healthy
