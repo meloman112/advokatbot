@@ -8,9 +8,9 @@ from aiogram import F, Router
 from aiogram.filters import Command, CommandStart
 from aiogram.types import CallbackQuery, Message, ReplyKeyboardRemove
 
-from src.config import settings
 from src.core.schemas import RequestCreateS, UserCreateS, UserUpdateS
 from src.keyboards import back_kb, language_kb, menu_kb, phone_kb
+from src.notify import notify_admins
 from src.repository.request import RequestRepository
 from src.repository.user import UserRepository
 from src.states import RequestForm
@@ -24,7 +24,7 @@ if TYPE_CHECKING:
     from aiogram.fsm.context import FSMContext
     from sqlalchemy.ext.asyncio import AsyncSession
 
-    from src.core.models import RequestOrm, UserOrm
+    from src.core.models import RequestOrm
 
 router = Router()
 # Команды-выходы: подключаются первыми, чтобы не быть съеденными хендлерами FSM-состояний.
@@ -143,7 +143,6 @@ async def form_text(
     bot: Bot,
     session: AsyncSession,
     texts: dict[str, Any],
-    lang: str,
     state: FSMContext,
 ) -> None:
     if message.from_user is None:
@@ -168,25 +167,9 @@ async def form_text(
         session=session,
         create_schema=RequestCreateS(user_id=user.id, name=data["name"], phone=data["phone"], text=text),
     )
-    await post_to_channel(bot=bot, request=request, user=user, lang=lang)
+    await notify_admins(bot=bot, session=session, request=request)
     await message.answer(texts["request_sent"].format(request_id=request.id))
     await show_menu(message, session=session, texts=texts)
-
-
-async def post_to_channel(bot: Bot, request: RequestOrm, user: UserOrm, lang: str) -> None:
-    channel_texts = await load_json_text(LanguageEnum.RU)
-    contact = f"@{user.username}" if user.username else f'<a href="tg://user?id={user.tg_id}">{user.tg_id}</a>'
-    await bot.send_message(
-        chat_id=settings.bot.channel_id,
-        text=channel_texts["channel_post"].format(
-            request_id=request.id,
-            name=html.escape(request.name),
-            phone=html.escape(request.phone),
-            lang=lang,
-            contact=contact,
-            text=html.escape(request.text),
-        ),
-    )
 
 
 @router.callback_query(F.data == "req:my")

@@ -9,6 +9,7 @@ from aiogram.fsm.storage.base import StorageKey
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import CallbackQuery, Message, User
 
+from src.config import settings
 from src.core.schemas import RequestCreateS, UserCreateS
 from src.handlers.admin import admin_answer_send
 from src.handlers.user import form_name, form_phone, form_text, set_language
@@ -59,7 +60,7 @@ class TestRequestFlow:
         assert user is not None
         assert user.lang == LanguageEnum.UZ
 
-    async def test_form_creates_request_and_posts_to_channel(self, session: AsyncSession, json_text: Any) -> None:
+    async def test_form_creates_request_and_notifies_admins(self, session: AsyncSession, json_text: Any) -> None:
         await ensure_user(session)
         state = make_state()
         bot = AsyncMock()
@@ -72,14 +73,7 @@ class TestRequestFlow:
         assert await state.get_state() == RequestForm.text
 
         message = make_message("Нужна помощь по трудовому спору с работодателем")
-        await form_text(
-            message=message,
-            bot=bot,
-            session=session,
-            texts=json_text,
-            lang=LanguageEnum.RU,
-            state=state,
-        )
+        await form_text(message=message, bot=bot, session=session, texts=json_text, state=state)
 
         user = await UserRepository.get_by_tg_id(session=session, tg_id=TG_ID)
         assert user is not None
@@ -88,6 +82,7 @@ class TestRequestFlow:
         assert requests[0].phone == "+998901234567"
         assert requests[0].status == RequestStatusEnum.NEW
         bot.send_message.assert_awaited_once()
+        assert bot.send_message.await_args.kwargs["chat_id"] == settings.bot.superadmin_id
         assert f"№{requests[0].id}" in bot.send_message.await_args.kwargs["text"]
         assert await state.get_state() is None
 

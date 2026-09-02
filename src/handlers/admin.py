@@ -12,6 +12,7 @@ from src.config import settings
 from src.core.schemas import RequestUpdateS, UserUpdateS
 from src.filters import IsAdmin
 from src.handlers.user import commands_router
+from src.notify import request_card, status_label
 from src.repository.request import RequestRepository
 from src.repository.user import UserRepository
 from src.states import AdminForm
@@ -24,7 +25,6 @@ if TYPE_CHECKING:
     from aiogram.fsm.context import FSMContext
     from sqlalchemy.ext.asyncio import AsyncSession
 
-    from src.core.models import RequestOrm
 
 router = Router()
 router.message.filter(IsAdmin())
@@ -109,27 +109,6 @@ async def admin_requests(callback: CallbackQuery, session: AsyncSession) -> None
     if isinstance(callback.message, Message):
         await edit_text(callback.message, body, reply_markup=InlineKeyboardMarkup(inline_keyboard=rows))
     await callback.answer()
-
-
-def status_label(request: RequestOrm) -> str:
-    return "новое" if request.status == RequestStatusEnum.NEW else "отвечено"
-
-
-def request_card(request: RequestOrm) -> str:
-    user = request.user
-    contact = f"@{user.username}" if user.username else f'<a href="tg://user?id={user.tg_id}">{user.tg_id}</a>'
-    card = (
-        f"Обращение №{request.id} — {status_label(request)}\n"
-        f"🕒 {request.created_at.strftime('%d.%m.%Y %H:%M')}\n"
-        f"👤 {html.escape(request.name)}\n"
-        f"📱 {html.escape(request.phone)}\n"
-        f"🌐 {user.lang}\n"
-        f"🔗 {contact}\n\n"
-        f"📄 {html.escape(request.text)}"
-    )
-    if request.answer:
-        card += f"\n\n💬 Ответ:\n{html.escape(request.answer)}"
-    return card
 
 
 @router.callback_query(F.data.startswith("a:req:"))

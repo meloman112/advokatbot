@@ -6,7 +6,6 @@ services:
     profiles: [ "prod" ]
     environment:
       APP_CONFIG__BOT__TOKEN: ${APP_CONFIG__BOT__TOKEN}
-      APP_CONFIG__BOT__CHANNEL_ID: ${APP_CONFIG__BOT__CHANNEL_ID}
       APP_CONFIG__BOT__SUPERADMIN_ID: ${APP_CONFIG__BOT__SUPERADMIN_ID}
 
       APP_CONFIG__DB__NAME: ${APP_CONFIG__DB__NAME}

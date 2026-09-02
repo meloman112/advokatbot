@@ -23,6 +23,5 @@
     "status_answered": "жавоб берилди",
     "answer_received": "💬 №{request_id} мурожаатга адвокат жавоби:\n\n{answer}",
     "cancelled": "Бекор қилинди.",
-    "cancel_hint": "Бекор қилиш учун /cancel юборинг",
-    "channel_post": "🆕 Мурожаат №{request_id}\n\n👤 {name}\n📱 {phone}\n🌐 {lang}\n🔗 {contact}\n\n📄 {text}"
+    "cancel_hint": "Бекор қилиш учун /cancel юборинг"
 }

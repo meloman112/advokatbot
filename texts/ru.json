@@ -23,6 +23,5 @@
     "status_answered": "отвечено",
     "answer_received": "💬 Ответ адвоката на обращение №{request_id}:\n\n{answer}",
     "cancelled": "Отменено.",
-    "cancel_hint": "Для отмены отправьте /cancel",
-    "channel_post": "🆕 Обращение №{request_id}\n\n👤 {name}\n📱 {phone}\n🌐 {lang}\n🔗 {contact}\n\n📄 {text}"
+    "cancel_hint": "Для отмены отправьте /cancel"
 }
